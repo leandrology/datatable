@@ -29,7 +29,6 @@ export default function Table() {
           }`;
           const data = await client.fetch(query);
           setProducts(data);
-          console.log(data);
           // Use the data as needed
         } catch (error) {
           console.error(error);
@@ -47,9 +46,15 @@ export default function Table() {
     //     });
     // };
 
-    // const dayOptions = {
-        
-    // };
+    const dayOptions = {
+        Monday: 'Monday',
+        Tuesday: 'Tuesday',
+        Wednesday: 'Wednesday',
+        Thursday: 'Thursday',
+        Friday: 'Friday',
+        Saturday: 'Saturday',
+        Sunday: 'Sunday'
+    };
 
     // const timeOptions = {
     //     0: '05:30',
@@ -89,13 +94,14 @@ export default function Table() {
         {
             dataField: 'day',
             text: 'Day Available',
+            placeholder: 'Hello',
             sort: true,
-            filter: textFilter(),
+            // filter: textFilter(),
 
-            // formatter: cell => dayOptions[cell],
-            // filter: selectFilter({
-            //     options: dayOptions,
-            // })
+            formatter: cell => dayOptions[cell],
+            filter: selectFilter({
+                options: dayOptions,
+            }),
         },
         {
             dataField: 'time',
@@ -111,10 +117,8 @@ export default function Table() {
     ];
   
   return (
-    <div>
+    <div className='container mx-auto py-8'>
       <BootstrapTable keyField='id' data={products} columns={columns} striped hover condensed pagination={paginationFactory()} filter={filterFactory()}/>
     </div>
-        
-        // <BootstrapTable keyField='id' data={ products } columns={ columns1 } filter={ filterFactory() } />
   )
 }
