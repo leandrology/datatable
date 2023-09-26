@@ -7,6 +7,9 @@ import filterFactory, { selectFilter, textFilter } from 'react-bootstrap-table2-
 import {useState, useEffect} from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import paginationFactory from 'react-bootstrap-table2-paginator'
+import { client } from '../utils/configSanity';
+
+
 
 export default function Table() {
 
@@ -16,45 +19,65 @@ export default function Table() {
         getProducts();
     }, []);
 
-    const getProducts = () => {
-        axios('https://retoolapi.dev/X8g1Dc/data')
-        .then((res) => {
-            console.log(res.data);
-            setProducts(res.data);
-        });
-    };
+    async function getProducts() {
+        try {
+          const query = `*[_type == 'schedule'] {
+            _id,
+            time,
+            day,
+            member->
+          }`;
+          const data = await client.fetch(query);
+          setProducts(data);
+          console.log(data);
+          // Use the data as needed
+        } catch (error) {
+          console.error(error);
+        }
+      }
 
-    const dayOptions = {
+
+    
+
+    // const getProducts = () => {
+    //     axios('https://retoolapi.dev/X8g1Dc/data')
+    //     .then((res) => {
+    //         console.log(res.data);
+    //         setProducts(res.data);
+    //     });
+    // };
+
+    // const dayOptions = {
         
-    };
+    // };
 
-    const timeOptions = {
-        0: '05:30',
-        1: '06:30',
-        2: '07:30'
-    };
+    // const timeOptions = {
+    //     0: '05:30',
+    //     1: '06:30',
+    //     2: '07:30'
+    // };
 
-    const voiceOptions = {
-        0: 'Alto',
-        1: 'Soprano',
-        2: 'Baritone'
-    };
+    // const voiceOptions = {
+    //     0: 'Alto',
+    //     1: 'Soprano',
+    //     2: 'Baritone'
+    // };
 
 
 
     const columns=[
+        // {
+        //     dataField: '_id',
+        //     text: 'User ID',
+        //     sort: true,
+        // },
         {
-            dataField: 'id',
-            text: 'User ID',
-            sort: true,
-        },
-        {
-            dataField: 'fullName',
+            dataField: 'member.name',
             text: 'Name',
             sort: true,
         },
         {
-            dataField: 'col3',
+            dataField: 'member.voice',
             text: 'Voice',
             sort: true,
             // formatter: cell => voiceOptions[cell],
@@ -64,7 +87,7 @@ export default function Table() {
             filter: textFilter(),
         },
         {
-            dataField: 'col1',
+            dataField: 'day',
             text: 'Day Available',
             sort: true,
             filter: textFilter(),
@@ -75,7 +98,7 @@ export default function Table() {
             // })
         },
         {
-            dataField: 'col2',
+            dataField: 'time',
             text: 'Time Available',
             sort: true,
             filter: textFilter(),
